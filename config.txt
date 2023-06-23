@@ -1,0 +1,42 @@
+config firewall vip
+    edit ubu-serv
+        set mappedip 192.168.129.3
+        set extintf port1
+        set portforward enable
+        set extport 3000
+        set mappedport 3000
+    next
+end
+
+config firewall service custom
+    edit port3k
+        set tcp-portrange 3000
+    next
+end
+
+config firewall policy
+    edit 1
+        set name inside-out
+        set srcintf port2
+        set dstintf port1
+        set action accept
+        set srcaddr all
+        set dstaddr all
+        set schedule always
+        set service ALL
+        set nat enable
+    next
+    edit 2
+        set name ubu-vip-in
+        set srcintf port1
+        set dstintf port2
+        set action accept
+        set srcaddr all
+        set dstaddr ubu-serv
+        set schedule always
+        set service port3k
+        set nat enable
+    next
+end
+
+
