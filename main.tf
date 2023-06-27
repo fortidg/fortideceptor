@@ -10,13 +10,13 @@ provider "google" {
   project      = var.project
   region       = var.region
   zone         = var.zone
-  access_token = var.token
+  /* access_token = var.token */
 }
 provider "google-beta" {
   project      = var.project
   region       = var.region
   zone         = var.zone
-  access_token = var.token
+  /* access_token = var.token */
 }
 
 # Randomize string to avoid duplication
@@ -172,7 +172,7 @@ resource "google_compute_instance" "fortigate" {
           nat_ip = google_compute_address.static2.address
     }
   }
-  
+
   network_interface {
     subnetwork = google_compute_subnetwork.trust.name
     network_ip = var.fgt_port2_ip

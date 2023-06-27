@@ -11,13 +11,12 @@ variable "zone" {
 # GCP project name
 variable "project" {
   type    = string
-  default = "cse-us-341516"
 }
 
 # GCP oauth access token
-variable "token" {
+/* variable "token" {
   type    = string
-}
+} */
 
 # FortiGate Image name
 # 7.2.3 payg is projects/fortigcp-project-001/global/images/fortinet-fgtondemand-725-20230613-001-w-license
