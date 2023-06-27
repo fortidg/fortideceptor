@@ -191,7 +191,7 @@ resource "google_compute_instance" "fortigate" {
     scopes = ["userinfo-email", "compute-ro", "storage-ro"]
   }
   scheduling {
-    preemptible       = true
+    preemptible       = false
     automatic_restart = false
   }
 }
