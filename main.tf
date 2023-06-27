@@ -70,7 +70,7 @@ resource "google_compute_subnetwork" "trust" {
 
 ### Tools Subnet ###
 resource "google_compute_subnetwork" "tools" {
-  name          = "trust-subnet-${random_string.random_name_post.result}"
+  name          = "tools-subnet-${random_string.random_name_post.result}"
   region        = var.region
   network       = google_compute_network.tools.name
   ip_cidr_range = var.tools_subnet
