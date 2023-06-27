@@ -46,7 +46,7 @@ variable "win-machine" {
 # GCP instance machine type standard
 variable "machine" {
   type    = string
-  default = "n1-standard-2"
+  default = "n1-standard-4"
 }
 
 # Public Subnet CIDR
