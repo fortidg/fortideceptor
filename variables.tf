@@ -11,6 +11,7 @@ variable "zone" {
 # GCP project name
 variable "project" {
   type    = string
+  default = "cselab-demo"
 }
 
 # GCP oauth access token
