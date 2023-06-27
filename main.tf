@@ -168,9 +168,6 @@ resource "google_compute_instance" "fortigate" {
     access_config {
           nat_ip = google_compute_address.static.address
     }
-    access_config {
-          nat_ip = google_compute_address.static2.address
-    }
   }
 
   network_interface {
