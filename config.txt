@@ -1,18 +1,34 @@
+config system global
+    set admin-sport 9443
+end
+
+config system interface
+    edit port3
+        set mode dhcp
+        set dhcp-classless-route-addition enable
+    next
+    edit port2
+        set mode dhcp
+        set dhcp-classless-route-addition enable
+    next    
+
 config firewall vip
-    edit ubu-serv
+    edit kali
         set mappedip 192.168.129.3
         set extintf port1
         set portforward enable
-        set extport 3000
-        set mappedport 3000
+        set extport 6443
+        set mappedport 443
     next
 end
 
-config firewall service custom
-    edit port3k
-        set tcp-portrange 3000
+    edit windows
+        set mappedip 192.168.129.4
+        set extintf port1
+        set portforward enable
+        set extport 3389
+        set mappedport 3389
     next
-end
 
 config firewall policy
     edit 1
@@ -27,14 +43,26 @@ config firewall policy
         set nat enable
     next
     edit 2
-        set name ubu-vip-in
+        set name kali-vip-in
         set srcintf port1
         set dstintf port2
         set action accept
         set srcaddr all
-        set dstaddr ubu-serv
+        set dstaddr kali
         set schedule always
-        set service port3k
+        set service HTTPS
+        set nat enable
+    next
+    edit 3
+    edit 3
+        set name rdp-to-win
+        set srcintf port1
+        set dstintf port2
+        set action accept
+        set srcaddr all
+        set dstaddr windows
+        set schedule always
+        set service RDP
         set nat enable
     next
 end
