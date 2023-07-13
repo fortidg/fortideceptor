@@ -28,8 +28,10 @@ resource "random_string" "random_name_post" {
 }
 
 # Create log disk
+
 resource "google_compute_disk" "logdisk" {
-  name = "log-disk-${random_string.random_name_post.result}"
+  for_each = local.students
+  name = "fgt-log-disk-${each.value.name}"
   size = 30
   type = "pd-standard"
   zone = var.zone
@@ -140,15 +142,11 @@ resource "google_compute_address" "static" {
   name = "deceptor-fgt-${random_string.random_name_post.result}-pip"
 }
 
-# Create second Static Public IP
-resource "google_compute_address" "static2" {
-  name = "deceptor-fgt-${random_string.random_name_post.result}-pip2"
-}
-
 
 # Create FGTVM compute instance
 resource "google_compute_instance" "fortigate" {
-  name           = "decptor-fgt-${random_string.random_name_post.result}"
+  for_each = local.students
+  name           = "decptor-fgt-${each.value.name}"
   machine_type   = var.machine
   zone           = var.zone
   can_ip_forward = "true"
@@ -161,31 +159,31 @@ resource "google_compute_instance" "fortigate" {
     }
   }
   attached_disk {
-    source = google_compute_disk.logdisk.name
+    source = "${each.value.disk}"
   }
   network_interface {
     subnetwork = google_compute_subnetwork.untrust.name
+    network_ip = "${each.value.p1ip}"
     access_config {
-          nat_ip = google_compute_address.static.address
+          /* nat_ip = google_compute_address.static.address */
     }
   }
 
   network_interface {
     subnetwork = google_compute_subnetwork.trust.name
-    network_ip = var.fgt_port2_ip
+    network_ip = "${each.value.p2ip}"
   }
 
     network_interface {
     subnetwork = google_compute_subnetwork.tools.name
-    network_ip = var.fgt_port3_ip
+    network_ip = "${each.value.p3ip}"
   }
 
 
   metadata = {
     user-data = "${file(var.user_data)}"
     user-data = fileexists("${path.module}/${var.user_data}") ? "${file(var.user_data)}" : null
-    #license   = "${file(var.license_file)}" #this is where to put the license file if using BYOL image
-    license = fileexists("${path.module}/${var.license_file}") ? "${file(var.license_file)}" : null
+    license = "${path.module}/${each.value.license_file}"
   }
   service_account {
     scopes = ["userinfo-email", "compute-ro", "storage-ro"]
@@ -214,39 +212,8 @@ resource "google_compute_instance" "kali" {
     subnetwork = google_compute_subnetwork.trust.name
     network_ip = var.kali_ip
   }
+ }
 
-  /* metadata_startup_script = data.template_file.linux-metadata.rendered */
-}
-
-# Bootstrapping Script to Install Apache
-/* data "template_file" "linux-metadata" {
-template = <<EOF
-#!/bin/bash
-## add student1 user, make them sudoer and allow pasword auth
-/usr/sbin/useradd student1
-echo student1:Fortinet1! | chpasswd
-usermod -aG sudo student1
-sudo sed -i "/^[^#]*PasswordAuthentication[[:space:]]no/c\PasswordAuthentication yes" /etc/ssh/sshd_config
-sudo service sshd restart
-exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
-echo "Wait for Internet access through the FGTs"
-while ! curl --connect-timeout 3 "http://www.google.com" &> /dev/null
-    do continue
-done
-apt-get update -y
-#install nodejs and npm
-curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - &&\
-apt-get install -y nodejs
-#install juice shop
-git clone https://github.com/juice-shop/juice-shop.git --depth 1
-cd juice-shop
-npm install
-npm start
-cd
-EOF
-} */
-
-# Create windows compute instance
 resource "google_compute_instance" "win" {
   name           = "deceptor-win-${random_string.random_name_post.result}"
   machine_type   = var.win-machine
@@ -264,11 +231,9 @@ resource "google_compute_instance" "win" {
     subnetwork = google_compute_subnetwork.trust.name
     network_ip = var.win_ip
   }
-
-  /* metadata_startup_script = data.template_file.linux-metadata.rendered */
 }
 
-# Output
+/* # Output
 output "FortiGate-NATIP" {
   value = google_compute_instance.fortigate.network_interface.0.access_config.0.nat_ip
 }
@@ -280,4 +245,4 @@ output "FortiGate-Username" {
 }
 output "FortiGate-Password" {
   value = google_compute_instance.fortigate.instance_id
-}
+} */

@@ -52,18 +52,18 @@ variable "machine" {
 # Public Subnet CIDR
 variable "public_subnet" {
   type    = string
-  default = "192.168.128.0/25"
+  default = "192.168.128.0/24"
 }
 # Private Subnet CIDR
 variable "protected_subnet" {
   type    = string
-  default = "192.168.129.0/25"
+  default = "192.168.129.0/24"
 }
 
 # Tools Subnet CIDR
 variable "tools_subnet" {
   type    = string
-  default = "192.168.130.0/25"
+  default = "192.168.130.0/24"
 }
 
 # FortiGate Trust IP
