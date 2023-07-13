@@ -94,7 +94,7 @@ resource "google_compute_route" "default-trust" {
 
 resource "google_compute_route" "default-tools" {
   for_each = local.students
-  name        = "default-tools"
+  name        = "default-tools-${each.value.name}"
   dest_range  = "0.0.0.0/0"
   network     = google_compute_network.tools.name
   next_hop_ip = "${each.value.p3ip}"
