@@ -89,7 +89,7 @@ resource "google_compute_route" "default-trust" {
   next_hop_ip = "${each.value.p2ip}"
   priority    = 100
   depends_on  = [google_compute_subnetwork.trust]
-  tags = "${each.value.name}"
+  tags = ["${each.value.name}"]
 }
 
 resource "google_compute_route" "default-tools" {
@@ -100,7 +100,7 @@ resource "google_compute_route" "default-tools" {
   next_hop_ip = "${each.value.p3ip}"
   priority    = 100
   depends_on  = [google_compute_subnetwork.tools]
-  tags = "${each.value.name}"
+  tags = ["${each.value.name}"]
 
 }
 
