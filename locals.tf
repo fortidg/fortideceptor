@@ -11,6 +11,8 @@ locals {
       license_file = "student1.lic"
       kalip = "192.168.1.11"
       winip = "192.168.1.12"
+      decp1 = "10.0.1.13"
+      decp2 = "192.168.1.13"
     }
     "student2" = {
       name    = "student2"
@@ -23,6 +25,8 @@ locals {
       license_file = "student2.lic"
       kalip = "192.168.2.11"
       winip = "192.168.2.12"
+      decp1 = "10.0.2.13"
+      decp2 = "192.168.2.13"
     }
           
   }
