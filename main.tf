@@ -215,7 +215,7 @@ resource "google_compute_instance" "kali" {
   }
  }
 
-resource "google_compute_instance" "win" {
+/* resource "google_compute_instance" "win" {
   name           = "deceptor-win-${random_string.random_name_post.result}"
   machine_type   = var.win-machine
   zone           = var.zone
@@ -232,7 +232,7 @@ resource "google_compute_instance" "win" {
     subnetwork = google_compute_subnetwork.trust.name
     network_ip = var.win_ip
   }
-}
+} */
 
 /* # Output
 output "FortiGate-NATIP" {
