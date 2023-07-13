@@ -139,7 +139,8 @@ resource "google_compute_firewall" "allow-tools" {
 
 # Create Static Public IP
 resource "google_compute_address" "static" {
-  name = "deceptor-fgt-${random_string.random_name_post.result}-pip"
+  for_each = local.students
+  name = "deceptor-fgt-${each.value.name}-pip"
 }
 
 
@@ -165,7 +166,7 @@ resource "google_compute_instance" "fortigate" {
     subnetwork = google_compute_subnetwork.untrust.name
     network_ip = "${each.value.p1ip}"
     access_config {
-          /* nat_ip = google_compute_address.static.address */
+          nat_ip = google_compute_address.static["${each.value.name}"].address
     }
   }
 
