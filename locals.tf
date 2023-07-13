@@ -20,7 +20,7 @@ locals {
       p1ip = "192.168.128.12"
       p2ip = "192.168.2.10"
       p3ip = "10.0.2.10"
-      license_file = "student1.lic"
+      license_file = "student2.lic"
       kalip = "192.168.2.11"
       winip = "192.168.2.12"
     }
