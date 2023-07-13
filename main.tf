@@ -64,36 +64,44 @@ resource "google_compute_subnetwork" "untrust" {
 }
 ### Private Subnet ###
 resource "google_compute_subnetwork" "trust" {
-  name          = "trust-subnet-${random_string.random_name_post.result}"
+  for_each = local.students
+  name          = "trust-subnet-${each.value.name}"
   region        = var.region
   network       = google_compute_network.trust.name
-  ip_cidr_range = var.protected_subnet
+  ip_cidr_range = "${each.value.trust_range}"
 }
 
 ### Tools Subnet ###
+
 resource "google_compute_subnetwork" "tools" {
-  name          = "tools-subnet-${random_string.random_name_post.result}"
+  for_each = local.students
+  name          = "tools-subnet-${each.value.name}"
   region        = var.region
   network       = google_compute_network.tools.name
-  ip_cidr_range = var.tools_subnet
+  ip_cidr_range = "${each.value.tools_range}"
 }
 
 resource "google_compute_route" "default-trust" {
-  name        = "default-trust"
+  for_each = local.students
+  name        = "default-trust-${each.value.name}"
   dest_range  = "0.0.0.0/0"
   network     = google_compute_network.trust.name
-  next_hop_ip = var.fgt_port2_ip
+  next_hop_ip = "${each.value.p2ip}"
   priority    = 100
   depends_on  = [google_compute_subnetwork.trust]
+  tags = "${each.value.name}"
 }
 
 resource "google_compute_route" "default-tools" {
+  for_each = local.students
   name        = "default-tools"
   dest_range  = "0.0.0.0/0"
   network     = google_compute_network.tools.name
-  next_hop_ip = var.fgt_port3_ip
+  next_hop_ip = "${each.value.p3ip}"
   priority    = 100
   depends_on  = [google_compute_subnetwork.tools]
+  tags = "${each.value.name}"
+
 }
 
 # Firewall Rule External
@@ -152,7 +160,7 @@ resource "google_compute_instance" "fortigate" {
   zone           = var.zone
   can_ip_forward = "true"
 
-  tags = ["allow-fgt", "allow-internal"]
+  tags = ["allow-fgt", "allow-internal", "${each.value.name}"]
 
   boot_disk {
     initialize_params {
@@ -171,12 +179,12 @@ resource "google_compute_instance" "fortigate" {
   }
 
   network_interface {
-    subnetwork = google_compute_subnetwork.trust.name
+    subnetwork = google_compute_subnetwork.trust["${each.value.name}"].name
     network_ip = "${each.value.p2ip}"
   }
 
     network_interface {
-    subnetwork = google_compute_subnetwork.tools.name
+    subnetwork = google_compute_subnetwork.tools["${each.value.name}"].name
     network_ip = "${each.value.p3ip}"
   }
 
@@ -197,12 +205,13 @@ resource "google_compute_instance" "fortigate" {
 
 # Create kali compute instance
 resource "google_compute_instance" "kali" {
-  name           = "deceptor-kali-${random_string.random_name_post.result}"
+  for_each = local.students
+  name           = "deceptor-kali-${each.value.name}"
   machine_type   = var.machine
   zone           = var.zone
   can_ip_forward = "false"
 
-  tags = ["allow-internal"]
+  tags = ["allow-internal", "${each.value.name}"]
 
   boot_disk {
     initialize_params {
@@ -210,8 +219,8 @@ resource "google_compute_instance" "kali" {
     }
   }
   network_interface {
-    subnetwork = google_compute_subnetwork.trust.name
-    network_ip = var.kali_ip
+    subnetwork = google_compute_subnetwork.trust["${each.value.name}"].name
+    network_ip = "${each.value.kalip}"
   }
  }
 
