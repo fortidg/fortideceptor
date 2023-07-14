@@ -37,6 +37,13 @@ resource "google_compute_disk" "logdisk" {
   zone = var.zone
 }
 
+resource "google_compute_disk" "deceptordisk" {
+  for_each = local.students
+  name = "deceptor-disk-${each.value.name}"
+  size = 200
+  type = "pd-standard"
+  zone = var.zone
+}
 
 ### VPC ###
 resource "google_compute_network" "untrust" {
@@ -155,7 +162,7 @@ resource "google_compute_address" "static" {
 # Create FGTVM compute instance
 resource "google_compute_instance" "fortigate" {
   for_each = local.students
-  name           = "decptor-fgt-${each.value.name}"
+  name           = "deceptor-fgt-${each.value.name}"
   machine_type   = var.machine
   zone           = var.zone
   can_ip_forward = "true"
@@ -168,7 +175,7 @@ resource "google_compute_instance" "fortigate" {
     }
   }
   attached_disk {
-    source = "${each.value.disk}"
+    source = google_compute_disk.logdisk["${each.value.name}"].name
   }
   network_interface {
     subnetwork = google_compute_subnetwork.untrust.name
@@ -224,24 +231,42 @@ resource "google_compute_instance" "kali" {
   }
  }
 
-/* resource "google_compute_instance" "win" {
-  name           = "deceptor-win-${random_string.random_name_post.result}"
-  machine_type   = var.win-machine
+# Create deceptor compute instance
+resource "google_compute_instance" "deceptor" {
+  for_each = local.students
+  name           = "deceptor-${each.value.name}"
+  machine_type   = var.deceptor_machine
   zone           = var.zone
   can_ip_forward = "false"
 
-  tags = ["allow-internal"]
+  tags = ["allow-fgt", "allow-internal", "${each.value.name}"]
 
   boot_disk {
     initialize_params {
-      image = var.win-image
+      image = var.deceptor_image
     }
   }
-  network_interface {
-    subnetwork = google_compute_subnetwork.trust.name
-    network_ip = var.win_ip
+  attached_disk {
+    source = google_compute_disk.deceptordisk["${each.value.name}"].name
   }
-} */
+  network_interface {
+    subnetwork = google_compute_subnetwork.tools["${each.value.name}"].name
+    network_ip = "${each.value.decp1}"
+  }
+
+  network_interface {
+    subnetwork = google_compute_subnetwork.trust["${each.value.name}"].name
+    network_ip = "${each.value.decp2}"
+  }
+
+  service_account {
+    scopes = ["userinfo-email", "compute-ro", "storage-ro"]
+  }
+  scheduling {
+    preemptible       = false
+    automatic_restart = false
+  }
+}
 
 /* # Output
 output "FortiGate-NATIP" {

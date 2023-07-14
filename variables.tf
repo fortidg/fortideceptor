@@ -101,3 +101,13 @@ variable "license_file" {
   type    = string
   default = "license.lic" #FGT BYOL license
 }
+
+variable "deceptor_image" {
+  type = string
+  default = "projects/cselab-demo/global/images/fortideceptor,mode=rw,size=10,type=projects/cselab-demo/zones/us-central1-a"
+}
+
+variable "deceptor_machine" {
+  type = string
+  default = "e2-highcpu-16"
+}
