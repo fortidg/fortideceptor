@@ -104,7 +104,7 @@ variable "license_file" {
 
 variable "deceptor_image" {
   type = string
-  default = "projects/cselab-demo/global/images/fortideceptor,mode=rw,size=10,type=projects/cselab-demo/zones/us-central1-a"
+  default = "projects/cselab-demo/global/images/fortideceptor"
 }
 
 variable "deceptor_machine" {
