@@ -197,7 +197,7 @@ resource "google_compute_instance" "fortigate" {
 
 
   metadata = {
-    user-data = "${file(data.template_file.fgt_userdata["${each.value.name}"])}"
+    user-data = data.template_file.fgt_userdata["${each.value.name}"].rendered
     /* user-data = fileexists("${path.module}/${var.user_data}") ? "${file(var.user_data)}" : null */
   }
   service_account {
