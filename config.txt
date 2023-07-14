@@ -1,5 +1,7 @@
 config system global
     set admin-sport 7443
+    set admintimeout 480
+    set hostname student1
 end
 
 config system interface
