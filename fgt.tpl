@@ -91,7 +91,7 @@ config firewall policy
         set service ALL
         set nat enable
     next
-    edit 2
+    edit 0
         set name ssl-in
         set srcintf ssl.root
         set dstintf port2 port3
