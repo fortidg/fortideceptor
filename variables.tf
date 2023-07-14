@@ -96,11 +96,11 @@ variable "user_data" {
   default = "config.txt"
 }
 
-# user data for bootstrap fgt license file
+/* # user data for bootstrap fgt license file
 variable "license_file" {
   type    = string
   default = "license.lic" #FGT BYOL license
-}
+} */
 
 variable "deceptor_image" {
   type = string

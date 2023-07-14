@@ -197,9 +197,8 @@ resource "google_compute_instance" "fortigate" {
 
 
   metadata = {
-    user-data = "${file(var.user_data)}"
-    user-data = fileexists("${path.module}/${var.user_data}") ? "${file(var.user_data)}" : null
-    /* license = "${path.module}/${each.value.license_file}" */
+    user-data = "${file(data.template_file.fgt_userdata["${each.value.name}"])}"
+    /* user-data = fileexists("${path.module}/${var.user_data}") ? "${file(var.user_data)}" : null */
   }
   service_account {
     scopes = ["userinfo-email", "compute-ro", "storage-ro"]
@@ -281,3 +280,12 @@ output "FortiGate-Username" {
 output "FortiGate-Password" {
   value = google_compute_instance.fortigate.instance_id
 } */
+
+
+data "template_file" "fgt_userdata" {
+  template = file("./fgt.tpl")
+  for_each = local.students
+  vars = {
+    fgt_id = "${each.value.name}"
+  }
+}

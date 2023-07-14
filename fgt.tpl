@@ -1,7 +1,11 @@
+Content-Type: multipart/mixed; boundary="===============0086047718136476635=="
+MIME-Version: 1.0
+
+--===============0086047718136476635==
 config system global
     set admin-sport 7443
     set admintimeout 480
-    set hostname student1
+    set hostname ${fgt_id}
 end
 
 config system interface
@@ -26,7 +30,7 @@ config user local
     next
 end
 
-config user groups
+config user group
     edit SSL-Group
         set member student
     next
@@ -100,3 +104,5 @@ config firewall policy
         set groups SSL-Group
     next
 end
+
+--===============0086047718136476635==
