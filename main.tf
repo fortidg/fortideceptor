@@ -192,7 +192,7 @@ resource "google_compute_instance" "fortigate" {
   metadata = {
     user-data = "${file(var.user_data)}"
     user-data = fileexists("${path.module}/${var.user_data}") ? "${file(var.user_data)}" : null
-    license = "${path.module}/${each.value.license_file}"
+    /* license = "${path.module}/${each.value.license_file}" */
   }
   service_account {
     scopes = ["userinfo-email", "compute-ro", "storage-ro"]
