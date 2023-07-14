@@ -1,7 +1,3 @@
-Content-Type: multipart/mixed; boundary="===============0086047718136476635=="
-MIME-Version: 1.0
-
---===============0086047718136476635==
 config system global
     set admin-sport 7443
     set admintimeout 480
@@ -104,5 +100,3 @@ config firewall policy
         set groups SSL-Group
     next
 end
-
---===============0086047718136476635==
