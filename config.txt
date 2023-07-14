@@ -22,7 +22,7 @@ end
 config user local
     edit student
         set type password
-        set passwd FortiCSE23!
+        set passwd FortiDeceptor123$
     next
 end
 
