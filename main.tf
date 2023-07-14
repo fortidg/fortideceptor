@@ -287,5 +287,7 @@ data "template_file" "fgt_userdata" {
   for_each = local.students
   vars = {
     fgt_id = "${each.value.name}"
+    trust_sub = "${each.value.trust_range}"
+    tools_sub = "${each.value.tools_range}"
   }
 }

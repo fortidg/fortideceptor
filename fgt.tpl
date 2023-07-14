@@ -51,10 +51,10 @@ end
 
 config firewall address
     edit trust_sub
-        set subnet 192.168.1.0 255.255.255.0
+        set subnet ${trust_sub}
     next
     edit tools_sub
-        set subnet 10.0.1.0 255.255.255.0
+        set subnet ${tools_sub}
     next
 end
 
