@@ -195,10 +195,8 @@ resource "google_compute_instance" "fortigate" {
     network_ip = "${each.value.p3ip}"
   }
 
-
   metadata = {
     user-data = data.template_file.fgt_userdata["${each.value.name}"].rendered
-    /* user-data = fileexists("${path.module}/${var.user_data}") ? "${file(var.user_data)}" : null */
   }
   service_account {
     scopes = ["userinfo-email", "compute-ro", "storage-ro"]
@@ -206,6 +204,16 @@ resource "google_compute_instance" "fortigate" {
   scheduling {
     preemptible       = false
     automatic_restart = false
+  }
+}
+
+data "template_file" "fgt_userdata" {
+  template = file("./fgt.tpl")
+  for_each = local.students
+  vars = {
+    fgt_id = "${each.value.name}"
+    trust_sub = "${each.value.trust_range}"
+    tools_sub = "${each.value.tools_range}"
   }
 }
 
@@ -267,27 +275,19 @@ resource "google_compute_instance" "deceptor" {
   }
 }
 
-/* # Output
+
+
+# Output
 output "FortiGate-NATIP" {
-  value = google_compute_instance.fortigate.network_interface.0.access_config.0.nat_ip
+  value = google_compute_instance.fortigate[*].network_interface.0.access_config.0.nat_ip
 }
 output "FortiGate-InstanceName" {
-  value = google_compute_instance.fortigate.name
+  value = google_compute_instance.fortigate[*].name
 }
 output "FortiGate-Username" {
   value = "admin"
 }
 output "FortiGate-Password" {
-  value = google_compute_instance.fortigate.instance_id
-} */
-
-
-data "template_file" "fgt_userdata" {
-  template = file("./fgt.tpl")
-  for_each = local.students
-  vars = {
-    fgt_id = "${each.value.name}"
-    trust_sub = "${each.value.trust_range}"
-    tools_sub = "${each.value.tools_range}"
-  }
+  value = google_compute_instance.fortigate[*].instance_id
 }
+
