@@ -291,8 +291,14 @@ output "FortiGate-Password" {
   value = google_compute_instance.fortigate[*].instance_id
 } */
 
-output "bd_name" {
+output "fortigate_name" {
   value = toset([
     for fortigate in google_compute_instance.fortigate : fortigate.name
+  ])
+}
+
+output "nat_ip" {
+  value = toset([
+    for fortigate in google_compute_instance.fortigate : fortigate.network_interface.0.access_config.0.nat_ip
   ])
 }
