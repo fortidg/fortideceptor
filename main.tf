@@ -310,11 +310,3 @@ output "fgt_password" {
     for fortigate in google_compute_instance.fortigate : fortigate.instance_id
   ])
 }
-
-output "fortigate_" {
-  value = toset([
-    for fortigate in google_compute_instance.fortigate : fortigate.name
-    for fortigate in google_compute_instance.fortigate : fortigate.network_interface.0.access_config.0.nat_ip
-    for fortigate in google_compute_instance.fortigate : fortigate.instance_id
-  ])
-}
