@@ -47,23 +47,23 @@ resource "google_compute_disk" "deceptordisk" {
 
 ### VPC ###
 resource "google_compute_network" "untrust" {
-  name                    = "untrust-${random_string.random_name_post.result}"
+  name                    = "untrust-deceptor"
   auto_create_subnetworks = false
 }
 
 resource "google_compute_network" "trust" {
-  name                    = "trust-${random_string.random_name_post.result}"
+  name                    = "trust-deceptor"
   auto_create_subnetworks = false
 }
 
 resource "google_compute_network" "tools" {
-  name                    = "tools-${random_string.random_name_post.result}"
+  name                    = "tools-deceptor"
   auto_create_subnetworks = false
 }
 
 ### Public Subnet ###
 resource "google_compute_subnetwork" "untrust" {
-  name                     = "untrust-subnet-${random_string.random_name_post.result}"
+  name                     = "untrust-subnet-deceptor"
   region                   = var.region
   network                  = google_compute_network.untrust.name
   ip_cidr_range            = var.public_subnet
@@ -113,7 +113,7 @@ resource "google_compute_route" "default-tools" {
 
 # Firewall Rule External
 resource "google_compute_firewall" "allow-all-fgt" {
-  name    = "allow-fgt-${random_string.random_name_post.result}"
+  name    = "allow-fgt-deceptor"
   network = google_compute_network.untrust.name
 
   allow {
@@ -130,7 +130,7 @@ resource "google_compute_firewall" "allow-all-fgt" {
 
 # Firewall Rule Internal
 resource "google_compute_firewall" "allow-internal" {
-  name    = "allow-internal-${random_string.random_name_post.result}"
+  name    = "allow-internal-deceptor"
   network = google_compute_network.trust.name
 
   allow {
@@ -142,7 +142,7 @@ resource "google_compute_firewall" "allow-internal" {
 
 # Firewall Rule Tools
 resource "google_compute_firewall" "allow-tools" {
-  name    = "allow-tools-${random_string.random_name_post.result}"
+  name    = "allow-tools-deceptor"
   network = google_compute_network.tools.name
 
   allow {
