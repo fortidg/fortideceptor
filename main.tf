@@ -179,7 +179,7 @@ resource "google_compute_instance" "fortigate" {
   }
   network_interface {
     subnetwork = google_compute_subnetwork.untrust.name
-    network_ip = "${each.value.p1ip}"
+    /* network_ip = "${each.value.p1ip}" */
     access_config {
           nat_ip = google_compute_address.static["${each.value.name}"].address
     }
