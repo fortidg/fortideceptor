@@ -277,17 +277,6 @@ resource "google_compute_instance" "deceptor" {
 
 
 
-/* # Output
-output "FortiGate-NATIP" {
-  value = google_compute_instance.fortigate[*].network_interface.0.access_config.0.nat_ip
-}
-output "FortiGate-InstanceName" {
-  value = google_compute_instance.fortigate[*].name
-}
-
-output "FortiGate-Password" {
-  value = google_compute_instance.fortigate[*].instance_id
-} */
 
 output "fortigate_name" {
   value = toset([
